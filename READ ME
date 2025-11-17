@@ -1,0 +1,41 @@
+# College-Fantasy
+
+Fantasy College Basketball — single-page client-side app with a live NCAA D1 scoreboard and an in-browser fantasy draft. Includes optional Stripe Checkout serverless endpoints for a "Pro Unlock" payment.
+
+## Repo contents
+- `index.html` — main UI
+- `style.css` — styling
+- `app.js` — client-side logic
+- `api/create-checkout-session.js` — Vercel serverless endpoint: create Stripe Checkout sessions
+- `api/verify-session.js` — Vercel serverless endpoint: verify a Checkout session
+- `api/webhook.js` — optional Stripe webhook handler
+- `package.json` — dependency list (stripe) for serverless functions
+- `.gitignore` — suggested ignores
+
+## Quick setup & deploy (Vercel)
+1. Push this repo to GitHub under your account (e.g. `dfro-mkr/College-Fantasy`).
+2. Import repository into Vercel (https://vercel.com) and create a new project from the repo.
+3. Add environment variables in Vercel Project Settings → Environment Variables:
+   - `STRIPE_SECRET_KEY` = your Stripe secret key (sk_test_...)
+   - `PRICE_CENTS` = 499 (optional; price in cents)
+   - `CURRENCY` = usd (optional)
+   - `SUCCESS_URL` = `https://your-vercel-domain/?session_id={CHECKOUT_SESSION_ID}&payment=success`
+   - `CANCEL_URL` = `https://your-vercel-domain/`
+   - `STRIPE_WEBHOOK_SECRET` = (optional; if you configure webhooks)
+4. Deploy. Vercel will install `stripe` from `package.json` and publish the site, exposing `/api/*` as serverless endpoints.
+
+## Local testing (static)
+- To test the UI/scoreboard only:
+  - Serve the folder with a static server: `npx http-server -p 3000` or `python -m http.server 3000`
+  - Open `http://localhost:3000`
+- The serverless endpoints require a server environment (Vercel, Netlify functions, or local serverless dev).
+
+## Stripe testing
+- Use Stripe test keys while testing.
+- Test card: `4242 4242 4242 4242` (any future expiry, any CVC).
+- Use the Stripe CLI to forward webhooks to local dev: `stripe listen --forward-to http://localhost:3000/api/webhook` and copy the webhook secret to `STRIPE_WEBHOOK_SECRET`.
+
+## Notes & next steps
+- Picks and the Pro flag are stored in `localStorage`. For cross-device persistence, implement server-side user records and use the webhook to provision purchases.
+- If the scoreboard API has CORS restrictions, add a server-side proxy endpoint to fetch scoreboard data and return it to the frontend.
+- License: add a license file if you want to publish this project publicly (MIT is common for demos).
