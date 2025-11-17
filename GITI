@@ -1,0 +1,17 @@
+# Node / serverless
+node_modules/
+.env
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.log
+
+# Vercel / local artifacts
+.vercel/
