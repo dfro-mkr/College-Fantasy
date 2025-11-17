@@ -1,1 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fantasy College Basketball</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="description" content="Fantasy College Basketball — Draft 2 Offensive, 2 Hybrid, 1 Defensive teams. Live NCAA D1 scoreboard and real-time fantasy scoring.">
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-dot"></div>
+      <div class="brand-text">
+        <h1>Fantasy College Basketball</h1>
+        <p class="sub">Live NCAA D1 • Draft & Score in real time</p>
+      </div>
+    </div>
+    <nav class="controls">
+      <label for="sort-select" class="sort-label">Sort</label>
+      <select id="sort-select" class="select">
+        <option value="time">Time / Status</option>
+        <option value="score">Total Score</option>
+        <option value="alpha">Alphabetical</option>
+      </select>
+      <button id="refresh-btn" class="btn small neon">Refresh</button>
 
+      <!-- Unlock Pro purchase button -->
+      <button id="buy-pro" class="btn neon" title="Unlock Pro features">Unlock Pro</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="left-col">
+      <div class="card scoreboard-card" id="scoreboard-card">
+        <div class="card-header">
+          <h2>Live NCAA D1 Scoreboard</h2>
+          <div class="meta">
+            <span id="last-updated">—</span>
+            <span class="dot" title="Live refresh">●</span>
+          </div>
+        </div>
+        <div id="scoreboard" class="scoreboard">
+          <!-- Games will be injected here -->
+          <div class="loader">Loading scoreboard…</div>
+        </div>
+        <div class="card-footer small muted">
+          Data powered by ncaa-api.henrygd.me • refreshes every 10s
+        </div>
+      </div>
+    </section>
+
+    <aside class="right-col">
+      <div class="card draft-card">
+        <div class="card-header">
+          <h3>Your Draft</h3>
+          <div class="small muted">Pick: 2 Offense • 2 Hybrid • 1 Defense</div>
+        </div>
+
+        <div class="category-selector">
+          <button class="cat-btn active" data-cat="offense">Offense <span class="count" id="count-offense">0/2</span></button>
+          <button class="cat-btn" data-cat="hybrid">Hybrid <span class="count" id="count-hybrid">0/2</span></button>
+          <button class="cat-btn" data-cat="defense">Defense <span class="count" id="count-defense">0/1</span></button>
+        </div>
+
+        <div class="slots">
+          <div class="slot-group">
+            <h4>Offense</h4>
+            <div class="slot" data-slot="offense-1" data-cat="offense">
+              <div class="empty">Click a team to add</div>
+            </div>
+            <div class="slot" data-slot="offense-2" data-cat="offense">
+              <div class="empty">Click a team to add</div>
+            </div>
+          </div>
+
+          <div class="slot-group">
+            <h4>Hybrid</h4>
+            <div class="slot" data-slot="hybrid-1" data-cat="hybrid">
+              <div class="empty">Click a team to add</div>
+            </div>
+            <div class="slot" data-slot="hybrid-2" data-cat="hybrid">
+              <div class="empty">Click a team to add</div>
+            </div>
+          </div>
+
+          <div class="slot-group">
+            <h4>Defense</h4>
+            <div class="slot" data-slot="defense-1" data-cat="defense">
+              <div class="empty">Click a team to add</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button id="reset-draft" class="btn ghost">Reset Draft</button>
+          <div id="draft-confirm" class="confirm-banner hidden">
+            Draft complete — picks saved. <button id="close-confirm" class="btn tiny neon">OK</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card summary-card" id="summary-card">
+        <div class="card-header">
+          <h3>Draft Summary</h3>
+          <div class="small muted">Live scoring & breakdown</div>
+        </div>
+
+        <div class="summary-body">
+          <div class="summary-list" id="summary-list">
+            <!-- Per-pick live stats will go here -->
+            <div class="muted">No picks yet — add teams to see live scoring.</div>
+          </div>
+
+          <div class="totals">
+            <div class="tot-row">
+              <div>Offense Total</div>
+              <div id="offense-total" class="neon">0</div>
+            </div>
+            <div class="tot-row">
+              <div>Hybrid Total</div>
+              <div id="hybrid-total" class="neon">0</div>
+            </div>
+            <div class="tot-row">
+              <div>Defense Total</div>
+              <div id="defense-total" class="neon">0</div>
+            </div>
+            <div class="tot-row total">
+              <div>Fantasy Total</div>
+              <div id="fantasy-total" class="big neon">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer small muted">
+          Picks persist in your browser via localStorage.
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <div class="small muted">Built for demonstration • No account required • Click teams to draft</div>
+  </footer>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <template id="game-template">
+    <div class="game">
+      <div class="team away">
+        <div class="abbrev"></div>
+        <div class="name"></div>
+      </div>
+      <div class="game-info">
+        <div class="score away-score"></div>
+        <div class="status"></div>
+        <div class="score home-score"></div>
+      </div>
+      <div class="team home">
+        <div class="name"></div>
+        <div class="abbrev"></div>
+      </div>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
